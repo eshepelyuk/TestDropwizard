@@ -28,5 +28,5 @@ distTar.archiveName = "${rootProject.name}.tar"
 mainClassName = 'com.infopulse.dropwizard.ServerMainApplication'
 
 run {
-    args["server"]
+    args "server"
 }
