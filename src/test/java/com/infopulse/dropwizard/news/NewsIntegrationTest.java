@@ -10,7 +10,10 @@ import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.skife.jdbi.v2.DBI;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,12 +57,7 @@ public class NewsIntegrationTest {
         DS.stop();
     }
 
-    public WebTarget NEWS;
-
-    @Before
-    public void setUp() throws Exception {
-        NEWS = new JerseyClientBuilder().build().target(format("http://localhost:%d/news", RULE.getLocalPort()));
-    }
+    public WebTarget NEWS = new JerseyClientBuilder().build().target(format("http://localhost:%d/news", RULE.getLocalPort()));
 
     @Test
     public void whenNewsPostedThenItAppearsInAllItemsList() {
@@ -96,7 +94,7 @@ public class NewsIntegrationTest {
         //when getting single item
         NewsItem retrievedItem = NEWS.path("/" + insertedId).request(MediaType.APPLICATION_JSON_TYPE).get(NewsItem.class);
 
-        //then only one item is present, and id matches
+        //then only one item is present, and all field match
         assertThat(retrievedItem.getTitle()).isEqualTo(originalItem.getTitle());
         assertThat(retrievedItem.getAuthor()).isEqualTo(originalItem.getAuthor());
         assertThat(retrievedItem.getContent()).isEqualTo(originalItem.getContent());

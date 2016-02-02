@@ -33,7 +33,6 @@ public class ServerMainApplication extends Application<ServerMainConfiguration> 
         final DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "h2");
         final NewsItemDAO newsItemDAO = jdbi.onDemand(NewsItemDAO.class);
 
-        NewsResource newsResource = new NewsResource(newsItemDAO);
-        environment.jersey().register(newsResource);
+        environment.jersey().register(new NewsResource(newsItemDAO));
     }
 }
