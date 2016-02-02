@@ -17,16 +17,16 @@ import org.junit.Test;
 import org.skife.jdbi.v2.DBI;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.Date;
 
 import static java.lang.String.format;
+import static javax.ws.rs.client.Entity.json;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NewsIntegrationTest {
@@ -62,7 +62,7 @@ public class NewsIntegrationTest {
     @Test
     public void whenNewsPostedThenItAppearsInAllItemsList() {
         //when posting news item
-        Response postNewsResp = NEWS.request().post(Entity.json(new NewsItem("title1", "author1", "content1", new Date())));
+        Response postNewsResp = NEWS.request(APPLICATION_JSON_TYPE).post(json(new NewsItem("title1", "author1", "content1", new Date())));
         Long insertedId = postNewsResp.readEntity(Long.class);
 
         //then postNewsResp is OK, DB populated with corresponding item
@@ -70,7 +70,7 @@ public class NewsIntegrationTest {
         assertThat((Long) (jdbi.withHandle(handle -> (Long) handle.select("select count(*) as cnt from news_item where id = :id", insertedId).get(0).get("cnt")))).isEqualTo(1L);
 
         //when getting list of items
-        Collection<NewsItem> items = NEWS.request().get(new GenericType<Collection<NewsItem>>() {
+        Collection<NewsItem> items = NEWS.request(APPLICATION_JSON_TYPE).get(new GenericType<Collection<NewsItem>>() {
         });
 
         //then only one item is present, and id matches
@@ -84,7 +84,7 @@ public class NewsIntegrationTest {
         NewsItem originalItem = new NewsItem("title2", "author2", "content2", new Date());
 
         //when posting news item
-        Response postNewsResp = NEWS.request().post(Entity.json(originalItem));
+        Response postNewsResp = NEWS.request(APPLICATION_JSON_TYPE).post(json(originalItem));
         Long insertedId = postNewsResp.readEntity(Long.class);
 
         //then postNewsResp is OK, DB populated with corresponding item
@@ -92,7 +92,7 @@ public class NewsIntegrationTest {
         assertThat((Long) (jdbi.withHandle(handle -> (Long) handle.select("select count(*) as cnt from news_item where id = :id", insertedId).get(0).get("cnt")))).isEqualTo(1L);
 
         //when getting single item
-        NewsItem retrievedItem = NEWS.path("/" + insertedId).request(MediaType.APPLICATION_JSON_TYPE).get(NewsItem.class);
+        NewsItem retrievedItem = NEWS.path("/" + insertedId).request(APPLICATION_JSON_TYPE).get(NewsItem.class);
 
         //then only one item is present, and all field match
         assertThat(retrievedItem.getTitle()).isEqualTo(originalItem.getTitle());
