@@ -36,7 +36,7 @@ Supported methods::
 == How to build
 
 . Unzip source archive
-. Navigate to `test-dropwizard-ch-src` folder with source code
+. Navigate to the folder with source code
 . Execute commands that will download `Gradle` build tool, run test and create distribution
 
   gradlew clean test distZip
