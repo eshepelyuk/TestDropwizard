@@ -27,7 +27,17 @@ test {
 distributions {
     src {
         contents {
-            from { '.' }
+            from 'src'
+            from('src/main/dist') {
+                include "*.pdf"
+                into ""
+            }
+            from('.') {
+                include "*.properties"
+                include "build.gradle"
+                include "settings.gradle"
+                include "gradle*/**"
+            }
         }
     }
 }
