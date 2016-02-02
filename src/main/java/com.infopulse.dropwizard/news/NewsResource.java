@@ -1,5 +1,6 @@
 package com.infopulse.dropwizard.news;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
@@ -16,7 +17,7 @@ public class NewsResource {
     }
 
     @POST
-    public Long addItem(NewsItem newsItem) {
+    public Long addItem(@Valid NewsItem newsItem) {
         return newsItemDAO.insert(newsItem);
     }
 

@@ -1,0 +1,54 @@
+= Test backend project for adding / displaying news items
+
+== REST API
+
+Acceptable request / response  content type is `application/json` only.
+
+On success HTTP status code 200 is returned, otherwise 4XX family code is returned on failure.
+
+News represented as `JSON` with following structure
+
+[source,json]
+----
+{
+  "id": {Long},
+  "title": {String}
+  "author": {String},
+  "content": {String},
+  "publishDate": {Date}
+}
+----
+
+
+=== URL `/news`
+
+Supported methods::
+* `POST` - Create news item
+* `GET` - Retrieve all news items as JSON list
+
+=== URL `/news/${id}`
+
+Supported methods::
+* `GET` - retrieve single news item
+
+== How to build
+
+. Unzip source archive
+. Navigate to `test-dropwizard-ch-src` folder with source code
+. Execute commands that will download `Gradle` build too, run test and create distribution
+
+  gradlew clean test distZip
+
+. Distribution archive is located at `build/distributions/test-dropwizard-ch.zip`
+
+== How to run
+
+. Unzip distribution archive
+. Navigate to `test-dropwizard-ch` folder
+. Create empty database
+
+  bin/test-dropwizard-ch db migrate main.yml
+
+. Start server
+
+  bin/test-dropwizard-ch server main.yml

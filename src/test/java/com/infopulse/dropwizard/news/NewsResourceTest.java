@@ -66,7 +66,7 @@ public class NewsResourceTest {
         Collection<NewsItem> items = singletonList(createItem(1L));
         when(itemsDao.findAll()).thenReturn(items);
 
-        // when
+        // when using unsupported content type
         Response response = NEWS.request(APPLICATION_ATOM_XML_TYPE).get();
 
         //then DAO not called and HTTP status 4XX returned
@@ -94,12 +94,37 @@ public class NewsResourceTest {
         NewsItem item = createItem(2L);
         when(itemsDao.findById(eq(222L))).thenReturn(item);
 
-        // when
+        // when using unsupported content type
         Response response = NEWS.path("/222").request(APPLICATION_ATOM_XML_TYPE).get();
 
         //then DAO not called and HTTP status 4XX returned
         verifyZeroInteractions(itemsDao);
         assertThat(response.getStatus()).isEqualTo(NOT_ACCEPTABLE.getStatusCode());
+    }
+
+    @Test
+    public void shouldNotReturn200IfItemNotFound() {
+        // given
+        when(itemsDao.findById(eq(333L))).thenReturn(null);
+
+        // when
+        Response response = NEWS.path("/333").request(APPLICATION_JSON_TYPE).get();
+
+        //then DAO called and proper result returned
+        verify(itemsDao).findById(333L);
+        assertThat(response.getStatus()).isNotEqualTo(Response.Status.OK.getStatusCode());
+    }
+
+    @Test(expected = ProcessingException.class)
+    public void shouldNotReturn200IfDbException() {
+        // given DB throws exception
+        when(itemsDao.findById(anyLong())).thenThrow(new DBIException("DB error") {
+        });
+
+        // when
+        NEWS.path("/333").request(APPLICATION_JSON_TYPE).get();
+
+        //then exception
     }
 
     @Test
@@ -122,7 +147,7 @@ public class NewsResourceTest {
         NewsItem item = createItemWithoutId();
         when(itemsDao.insert(any(NewsItem.class))).thenReturn(444L);
 
-        // when
+        // when using unsupported content type
         Response response = NEWS.request(APPLICATION_ATOM_XML).post(json(item));
 
         //then DAO not called and 4XX returned
@@ -135,7 +160,7 @@ public class NewsResourceTest {
         // given
         when(itemsDao.insert(any(NewsItem.class))).thenReturn(444L);
 
-        // when
+        // when posting arbitrary data instead of JSON
         Response response = NEWS.request(APPLICATION_JSON_TYPE).post(text("test string"));
 
         //then DAO not called and 4XX returned
@@ -144,27 +169,16 @@ public class NewsResourceTest {
     }
 
     @Test
-    public void shouldNotReturn200IfItemNotFound() {
-        // given
-        when(itemsDao.findById(anyLong())).thenReturn(null);
+    public void shouldValidateItemWhenAddingNews() {
+        // given item violating validation
+        NewsItem item = new NewsItem(null, "author5", "content5", new Date());
+        when(itemsDao.insert(any(NewsItem.class))).thenReturn(555L);
 
         // when
-        Response response = NEWS.path("/333").request(APPLICATION_JSON_TYPE).get();
+        Response response = NEWS.request(APPLICATION_JSON_TYPE).post(json(item));
 
-        //then DAO called and proper result returned
-        verify(itemsDao).findById(333L);
-        assertThat(response.getStatus()).isNotEqualTo(Response.Status.OK.getStatusCode());
-    }
-
-    @Test(expected = ProcessingException.class)
-    public void shouldNotReturn200IfDbException() {
-        // given
-        when(itemsDao.findById(anyLong())).thenThrow(new DBIException("DB error") {
-        });
-
-        // when
-        NEWS.path("/333").request(APPLICATION_JSON_TYPE).get();
-
-        //then exception
+        //then DAO not called and 4XX returned
+        verifyZeroInteractions(itemsDao);
+        assertThat(response.getStatus()).isEqualTo(422);
     }
 }
