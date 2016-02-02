@@ -36,23 +36,32 @@ Supported methods::
 == How to build
 
 . Unzip source archive
-. Navigate to the folder with source code
+. Navigate to `test-dw-ch-src` folder
 . Execute commands that will download `Gradle` build tool, run test and create distribution
 
-  gradlew clean test distZip
+Windows::
+  gradlew.bat clean test distZip
+Unix::
+  ./gradlew clean test distZip
 
-. Distribution archive is located at `build/distributions/test-dropwizard-ch.zip`
+. Distribution archive is located at `build/distributions/test-dw-ch.zip`
 
 == How to run
 
 . Unzip distribution archive
-. Navigate to `test-dropwizard-ch` folder
+. Navigate to `test-dw-ch` folder
 . Create empty database
 
-  bin/test-dropwizard-ch db migrate main.yml
+Windows::
+  bin\test-dw-ch db migrate main.yml
+Unix::
+  ./bin/test-dw-ch db migrate main.yml
 
 . Start server
 
-  bin/test-dropwizard-ch server main.yml
+Windows::
+  bin\test-dw-ch server main.yml
+Unix::
+  ./bin/test-dw-ch server main.yml
 
 . Server can be reached at URL `http://localhost:8080`. By default `8080` port is used.

@@ -24,7 +24,16 @@ test {
     testLogging.showStandardStreams = true
 }
 
+distributions {
+    src {
+        contents {
+            from { '.' }
+        }
+    }
+}
+
 distZip.archiveName = "${rootProject.name}.zip"
-distTar.archiveName = "${rootProject.name}.tar"
+
+srcDistZip.archiveName = "${rootProject.name}-src.zip"
 
 mainClassName = 'com.infopulse.dropwizard.ServerMainApplication'
