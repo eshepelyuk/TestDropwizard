@@ -15,6 +15,7 @@ import java.util.Date;
 
 import static java.util.Collections.singletonList;
 import static javax.ws.rs.client.Entity.json;
+import static javax.ws.rs.core.MediaType.APPLICATION_ATOM_XML;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -83,6 +84,20 @@ public class NewsResourceTest {
         //then DAO called and proper result returned
         verify(itemsDao).insert(any(NewsItem.class));
         assertThat(insertedId).isEqualTo(444L);
+    }
+
+    @Test
+    public void shouldAcceptOnlyJSONForAddingNews() throws Exception {
+        // given
+        NewsItem item = createItemWithoutId();
+        when(itemsDao.insert(any(NewsItem.class))).thenReturn(444L);
+
+        // when
+        Response response = NEWS.request(APPLICATION_ATOM_XML).post(json(item));
+
+        //then DAO not called and 406 returned
+        verifyZeroInteractions(itemsDao);
+        assertThat(response.getStatus()).isEqualTo(Response.Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
     @Test
