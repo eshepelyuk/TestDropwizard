@@ -55,4 +55,4 @@ Supported methods::
 
   bin/test-dropwizard-ch server main.yml
 
-. Server can be reached at URL `http://localhost:8080`
+. Server can be reached at URL `http://localhost:8080`. By default `8080` port is used.
