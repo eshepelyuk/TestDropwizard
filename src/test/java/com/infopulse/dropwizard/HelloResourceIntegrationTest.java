@@ -7,6 +7,7 @@ import io.dropwizard.testing.junit.DropwizardAppRule;
 import liquibase.Liquibase;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -20,20 +21,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HelloResourceIntegrationTest {
     @ClassRule
     public static final DropwizardAppRule<ServerMainConfiguration> RULE =
-            new DropwizardAppRule<>(ServerMainApplication.class, ResourceHelpers.resourceFilePath("test.yml"));
+            new DropwizardAppRule<>(ServerMainApplication.class, ResourceHelpers.resourceFilePath("main.yml"));
 
     static DBI jdbi = null;
 
+    static ManagedDataSource DS = null;
+
     @BeforeClass
-    public static void migrateDatabase() throws Exception {
+    public static void setUpClass() throws Exception {
         DBIFactory factory = new DBIFactory();
         jdbi = factory.build(RULE.getEnvironment(), RULE.getConfiguration().getDataSourceFactory(), "h2");
 
-        ManagedDataSource ds = RULE.getConfiguration().getDataSourceFactory().build(RULE.getEnvironment().metrics(), "migrations");
-        try (Connection connection = ds.getConnection()) {
+        DS = RULE.getConfiguration().getDataSourceFactory().build(RULE.getEnvironment().metrics(), "migrations");
+        DS.start();
+
+        try (Connection connection = DS.getConnection()) {
             Liquibase migrator = new Liquibase("migrations.xml", new ClassLoaderResourceAccessor(), new liquibase.database.jvm.JdbcConnection(connection));
             migrator.update("");
         }
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        DS.stop();
     }
 
     @Test
