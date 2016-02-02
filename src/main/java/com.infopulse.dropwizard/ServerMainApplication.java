@@ -13,7 +13,7 @@ import org.skife.jdbi.v2.DBI;
 
 public class ServerMainApplication extends Application<ServerMainConfiguration> {
     public static void main(String[] args) throws Exception {
-        new ServerMainApplication().run();
+        new ServerMainApplication().run(args);
     }
 
     @Override

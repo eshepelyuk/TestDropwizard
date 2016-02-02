@@ -13,10 +13,11 @@ repositories {
 dependencies {
     compile "io.dropwizard:dropwizard-core:$dropwizardVersion",
             "io.dropwizard:dropwizard-migrations:$dropwizardVersion",
-            "io.dropwizard:dropwizard-jdbi:$dropwizardVersion"
-
-    testCompile "io.dropwizard:dropwizard-testing:$dropwizardVersion",
+            "io.dropwizard:dropwizard-jdbi:$dropwizardVersion",
             'com.h2database:h2:1.4.191'
+
+    testCompile "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+
 }
 
 test {
@@ -27,7 +28,3 @@ distZip.archiveName = "${rootProject.name}.zip"
 distTar.archiveName = "${rootProject.name}.tar"
 
 mainClassName = 'com.infopulse.dropwizard.ServerMainApplication'
-
-run {
-    args "server"
-}
