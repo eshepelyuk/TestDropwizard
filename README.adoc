@@ -23,13 +23,15 @@ News represented as `JSON` with following structure
 === URL `/news`
 
 Supported methods::
-* `POST` - Create news item
-* `GET` - Retrieve all news items as JSON list
+* `POST` - create news item, return `id` of created item in response body
+* `GET` - retrieve all news items as JSON list in response body
 
 === URL `/news/${id}`
 
+`id` is identifier of news item
+
 Supported methods::
-* `GET` - retrieve single news item
+* `GET` - retrieve single news item as JSON in response body
 
 == How to build
 
@@ -52,3 +54,5 @@ Supported methods::
 . Start server
 
   bin/test-dropwizard-ch server main.yml
+
+. Server can be reached at URL `http://localhost:8080`
