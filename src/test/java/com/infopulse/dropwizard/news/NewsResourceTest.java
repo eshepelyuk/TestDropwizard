@@ -15,8 +15,10 @@ import java.util.Date;
 
 import static java.util.Collections.singletonList;
 import static javax.ws.rs.client.Entity.json;
-import static javax.ws.rs.core.MediaType.APPLICATION_ATOM_XML;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static javax.ws.rs.client.Entity.text;
+import static javax.ws.rs.core.MediaType.*;
+import static javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE;
+import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +45,7 @@ public class NewsResourceTest {
     }
 
     @Test
-    public void shouldUseDaoForFindAllNews() throws Exception {
+    public void shouldUseDaoForFindAllNews() {
         // given
         Collection<NewsItem> items = singletonList(createItem(1L));
         when(itemsDao.findAll()).thenReturn(items);
@@ -59,7 +61,21 @@ public class NewsResourceTest {
     }
 
     @Test
-    public void shouldUseDaoForFindingSingleNews() throws Exception {
+    public void shouldAcceptOnlyJSONForFindAllNews() {
+        // given
+        Collection<NewsItem> items = singletonList(createItem(1L));
+        when(itemsDao.findAll()).thenReturn(items);
+
+        // when
+        Response response = NEWS.request(APPLICATION_ATOM_XML_TYPE).get();
+
+        //then DAO not called and HTTP status 4XX returned
+        verifyZeroInteractions(itemsDao);
+        assertThat(response.getStatus()).isEqualTo(NOT_ACCEPTABLE.getStatusCode());
+    }
+
+    @Test
+    public void shouldUseDaoForFindSingleNews() {
         // given
         NewsItem item = createItem(2L);
         when(itemsDao.findById(eq(222L))).thenReturn(item);
@@ -73,7 +89,21 @@ public class NewsResourceTest {
     }
 
     @Test
-    public void shouldUseDaoForAddingNews() throws Exception {
+    public void shouldAcceptOnlyJSONForFindSingleNews() {
+        // given
+        NewsItem item = createItem(2L);
+        when(itemsDao.findById(eq(222L))).thenReturn(item);
+
+        // when
+        Response response = NEWS.path("/222").request(APPLICATION_ATOM_XML_TYPE).get();
+
+        //then DAO not called and HTTP status 4XX returned
+        verifyZeroInteractions(itemsDao);
+        assertThat(response.getStatus()).isEqualTo(NOT_ACCEPTABLE.getStatusCode());
+    }
+
+    @Test
+    public void shouldUseDaoForAddingNews() {
         // given
         NewsItem item = createItemWithoutId();
         when(itemsDao.insert(any(NewsItem.class))).thenReturn(444L);
@@ -87,7 +117,7 @@ public class NewsResourceTest {
     }
 
     @Test
-    public void shouldAcceptOnlyJSONForAddingNews() throws Exception {
+    public void shouldAcceptOnlyJSONForAddingNews() {
         // given
         NewsItem item = createItemWithoutId();
         when(itemsDao.insert(any(NewsItem.class))).thenReturn(444L);
@@ -95,13 +125,26 @@ public class NewsResourceTest {
         // when
         Response response = NEWS.request(APPLICATION_ATOM_XML).post(json(item));
 
-        //then DAO not called and 406 returned
+        //then DAO not called and 4XX returned
         verifyZeroInteractions(itemsDao);
-        assertThat(response.getStatus()).isEqualTo(Response.Status.NOT_ACCEPTABLE.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(NOT_ACCEPTABLE.getStatusCode());
     }
 
     @Test
-    public void shouldNotReturn200IfItemNotFound() throws Exception {
+    public void shouldAcceptOnlyProperJSONForAddingNews() {
+        // given
+        when(itemsDao.insert(any(NewsItem.class))).thenReturn(444L);
+
+        // when
+        Response response = NEWS.request(APPLICATION_JSON_TYPE).post(text("test string"));
+
+        //then DAO not called and 4XX returned
+        verifyZeroInteractions(itemsDao);
+        assertThat(response.getStatus()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.getStatusCode());
+    }
+
+    @Test
+    public void shouldNotReturn200IfItemNotFound() {
         // given
         when(itemsDao.findById(anyLong())).thenReturn(null);
 
@@ -114,7 +157,7 @@ public class NewsResourceTest {
     }
 
     @Test(expected = ProcessingException.class)
-    public void shouldNotReturn200IfDbException() throws Exception {
+    public void shouldNotReturn200IfDbException() {
         // given
         when(itemsDao.findById(anyLong())).thenThrow(new DBIException("DB error") {
         });
