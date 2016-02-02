@@ -7,11 +7,20 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="1" author="infopulse">
-        <createTable tableName="people" schemaName="public">
+        <createTable tableName="news_item" schemaName="public">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="fullName" type="varchar(255)">
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="varchar(2048)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publishDate" type="datetime">
                 <constraints nullable="false"/>
             </column>
         </createTable>
