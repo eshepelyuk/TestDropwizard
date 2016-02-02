@@ -33,6 +33,8 @@ Supported methods::
 Supported methods::
 * `GET` - retrieve single news item as JSON in response body
 
+<<<
+
 == How to build
 
 . Unzip source archive
@@ -40,11 +42,16 @@ Supported methods::
 . Execute commands that will download `Gradle` build tool, run test and create distribution
 
 Windows::
++
   gradlew.bat clean test distZip
+
 Unix::
++
   ./gradlew clean test distZip
 
 . Distribution archive is located at `build/distributions/test-dw-ch.zip`
+
+<<<
 
 == How to run
 
@@ -53,15 +60,21 @@ Unix::
 . Create empty database
 
 Windows::
++
   bin\test-dw-ch db migrate main.yml
+
 Unix::
++
   ./bin/test-dw-ch db migrate main.yml
 
 . Start server
 
 Windows::
++
   bin\test-dw-ch server main.yml
+
 Unix::
++
   ./bin/test-dw-ch server main.yml
 
 . Server can be reached at URL `http://localhost:8080`. By default `8080` port is used.
