@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.11'
+    }
+}
+
 plugins {
     id 'java'
     id 'application'
@@ -27,14 +33,26 @@ test {
     testLogging.showStandardStreams = true
 }
 
+mainClassName = 'com.infopulse.dropwizard.ServerMainApplication'
+
+asciidoctor {
+    backends 'pdf'
+    logDocuments = true
+}
+
 distributions {
-    src {
+    main {
         contents {
-            from 'src'
-            from('src/main/dist') {
+            from(asciidoctor) {
                 include "*.pdf"
                 into ""
             }
+        }
+    }
+    src {
+        contents {
+            from('src')
+
             from('.') {
                 include "*.properties"
                 include "build.gradle"
@@ -49,9 +67,3 @@ distZip.archiveName = "${rootProject.name}.zip"
 
 srcDistZip.archiveName = "${rootProject.name}-src.zip"
 
-mainClassName = 'com.infopulse.dropwizard.ServerMainApplication'
-
-asciidoctor {
-    backends 'pdf'
-    logDocuments = true
-}

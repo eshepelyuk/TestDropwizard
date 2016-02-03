@@ -1,9 +1,9 @@
 = Test backend project using Dropwizard framework for adding / displaying news items
 
-* Few CRUD-like REST calls via http://www.dropwizard.io/0.9.2/docs/[Dropwizard]
-* Unit and Integration tests
+* CRUD-like REST calls via http://www.dropwizard.io/0.9.2/docs/[Dropwizard]
 * DB interaction using http://www.h2database.com/html/main.html[H2 database]
-* Build with http://gradle.org/[Gradle]
+* Unit and Integration tests
+* Built with http://gradle.org/[Gradle]
 
 == REST API
 
@@ -28,7 +28,7 @@ News represented as `JSON` with following structure
 === URL `/news`
 
 Supported methods::
-* `POST` - create news item, return `id` of created item in response body
+* `POST` - create news item, return `id` of created item in response body. `id` should be omitted in when posting JSON
 * `GET` - retrieve all news items as JSON list in response body
 
 === URL `/news/${id}`
