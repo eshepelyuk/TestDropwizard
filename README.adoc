@@ -1,1 +1,1 @@
-include::src/docs/asciidoc/README.adoc[]
+link:src/docs/asciidoc/README.adoc[Project README]
