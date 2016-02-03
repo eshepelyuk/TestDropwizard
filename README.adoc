@@ -1,3 +1,8 @@
 == Test project using Dropwizard framework
 
+* Few CRUD-like REST calls
+* Unit and Integration tests
+* DB interaction using http://www.h2database.com/html/main.html[H2 database] 
+* Build with http://gradle.org/[Gradle]
+
 http://www.dropwizard.io/0.9.2/docs/[Link to Dropwizard framework]
