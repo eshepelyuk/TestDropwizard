@@ -1,5 +1,8 @@
-apply plugin: 'java'
-apply plugin: 'application'
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.asciidoctor.convert' version '1.5.2'
+}
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -47,3 +50,8 @@ distZip.archiveName = "${rootProject.name}.zip"
 srcDistZip.archiveName = "${rootProject.name}-src.zip"
 
 mainClassName = 'com.infopulse.dropwizard.ServerMainApplication'
+
+asciidoctor {
+    backends 'pdf'
+    logDocuments = true
+}
