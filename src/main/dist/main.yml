@@ -9,3 +9,6 @@ database:
   driverClass: org.h2.Driver
   user: sa
   url: jdbc:h2:./dbmain
+
+logging:
+  level: INFO
