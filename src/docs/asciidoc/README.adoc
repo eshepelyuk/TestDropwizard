@@ -83,3 +83,55 @@ Unix::
   ./bin/test-dw-ch server main.yml
 
 . Server can be reached at URL `http://localhost:8080`. By default `8080` port is used.
+
+<<<
+
+== Test angularjs client with “Angular Lazy” template project for adding / displaying news items
+
+=== How to build
+
+==== Install required
+
+. Download and install `nodejs` https://nodejs.org/en/
+. Install `gulp`, execute command
+::
+  npm install –g gulp
+  
+==== Build
+
+. Unzip project archive
+. Navigate to `client-news` folder
+. Execute commands that will build project
+::
+  gulp build
+. Build project is located at `build` folder
+
+==== How to run
+
+. Navigate to `client-news` folder
+. Starts a connect based server on port `8088`
+
+  gulp
+  
+. Client app can be reached at URL http://localhost:8088. By default 8088 post is used
+
+<<<
+
+== Autotesting for client side code
+
+=== Prerequisites
+
+* https://maven.apache.org/download.cgi[Maven 2.+]
+* http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java 1.8.+]
+
+=== Test execution:
+. Go to folder test-selenium
+. windows/linux command line:
+
+  mvn clean verify thucydides:aggregate
+
+=== Test results
+
+Test results are available in pretty format on browser::
+
+`test-selenium/target/site/thucydides/index.html`
