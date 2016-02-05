@@ -52,7 +52,10 @@ distributions {
     src {
         contents {
             from('src')
-
+            from(asciidoctor) {
+                include "*.pdf"
+                into ""
+            }
             from('.') {
                 include "*.properties"
                 include "build.gradle"
