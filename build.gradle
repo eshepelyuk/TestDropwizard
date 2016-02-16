@@ -33,7 +33,7 @@ test {
     testLogging.showStandardStreams = true
 }
 
-mainClassName = 'com.infopulse.dropwizard.ServerMainApplication'
+mainClassName = 'ServerMainApplication'
 
 asciidoctor {
     backends 'pdf'
