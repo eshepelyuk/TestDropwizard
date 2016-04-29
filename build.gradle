@@ -7,7 +7,8 @@ buildscript {
 plugins {
     id 'java'
     id 'application'
-    id 'org.asciidoctor.convert' version '1.5.2'
+    id 'org.asciidoctor.convert' version '1.5.3'
+	id 'com.github.jruby-gradle.base' version '1.2.1'
 }
 
 sourceCompatibility = '1.8'
@@ -19,6 +20,10 @@ repositories {
     jcenter()
 }
 
+configurations {
+    jaxrsAnalyzer
+}
+
 dependencies {
     compile "io.dropwizard:dropwizard-core:$dropwizardVersion",
             "io.dropwizard:dropwizard-migrations:$dropwizardVersion",
@@ -27,6 +32,9 @@ dependencies {
 
     testCompile "io.dropwizard:dropwizard-testing:$dropwizardVersion"
 
+    jaxrsAnalyzer "com.sebastian-daschner:jaxrs-analyzer:0.9"
+	
+	gems 'rubygems:asciidoctor-diagram:1.4.0'
 }
 
 test {
@@ -37,7 +45,12 @@ mainClassName = 'ServerMainApplication'
 
 asciidoctor {
     backends 'pdf'
-    logDocuments = true
+    logDocuments = true	
+	dependsOn jrubyPrepare
+	requires = ['asciidoctor-diagram']
+	gemPath = jrubyPrepare.outputDir
+	
+	attributes 'buildDir': buildDir
 }
 
 distributions {
@@ -70,3 +83,15 @@ distZip.archiveName = "${rootProject.name}.zip"
 
 srcDistZip.archiveName = "${rootProject.name}-src.zip"
 
+task genDoc(type: JavaExec) {
+    classpath project.configurations.jaxrsAnalyzer
+    main "com.sebastian_daschner.jaxrs_analyzer.Main"
+    systemProperties = System.properties
+    args "-b", "plaintext"
+    args "-o", "$buildDir/jaxrsAnalyzer/index.adoc"
+    args "${buildDir}/classes/main"
+}
+
+genDoc.doFirst {
+    file("$buildDir/jaxrsAnalyzer/").mkdirs()
+}
