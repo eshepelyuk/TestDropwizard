@@ -1,19 +1,4 @@
 = Installation and usage guide for a test task
-:imagesdir: {buildDir}/asciidoc/pdf
-
-== Diagram {imagesdir}
-
-[plantuml, ./diagram, png]
-.Diagram Title
-....
-@startuml
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
-
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
-@enduml
-....
 
 == Backend project for adding / displaying news items
 
