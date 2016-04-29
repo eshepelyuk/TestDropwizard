@@ -44,7 +44,7 @@ mainClassName = 'ServerMainApplication'
 asciidoctor {
     backends 'pdf'
     logDocuments = true
-    requires = ['asciidoctor-diagram']
+    requires 'asciidoctor-diagram'
     attributes 'buildDir': buildDir
 }
 
